@@ -5,18 +5,18 @@ import { ROUTES } from "@/constants";
 import SignupForm from "../_components/SignupForm";
 
 export const metadata: Metadata = {
-  title: "Create an account",
+  title: "Create your account",
 };
 
-const SignupPage = () => {
+const RegisterPage = () => {
   /**COMPONENT */
   return (
     <Card
       className="w-full max-w-md"
       header={
         <div>
-          <h1 className="text-lg font-semibold">Create an account</h1>
-          <p className="muted text-sm">It only takes a minute</p>
+          <h1 className="text-lg font-semibold">Create your account</h1>
+          <p className="muted text-sm">Next you'll set up your club</p>
         </div>
       }
       footer={
@@ -36,4 +36,4 @@ const SignupPage = () => {
   );
 };
 
-export default SignupPage;
+export default RegisterPage;
