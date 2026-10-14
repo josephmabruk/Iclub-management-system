@@ -1,18 +1,17 @@
-// Application-wide constants
-
 export const SITE = {
-  name: "Next Template",
-  description:
-    "A Next.js + Redux starter for apps that talk to a separate backend.",
+  name: "iClub",
+  description: "A records system for student club committees.",
   owner: "Info-Space Meta",
 } as const;
 
 export const ROUTES = {
-  home: "/",
+  root: "/",
+  home: "/home",
+  login: "/login",
+  register: "/register",
+  setup: "/setup",
   about: "/about",
   contact: "/contact",
-  login: "/login",
-  signup: "/signup",
   dashboard: "/dashboard",
   settings: "/settings",
   project: (id: string) => `/projects/${id}`,

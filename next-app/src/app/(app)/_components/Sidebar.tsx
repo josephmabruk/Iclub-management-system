@@ -37,7 +37,7 @@ const Sidebar = () => {
         )}
       >
         <div className="flex h-16 items-center border-b border-gray-200 px-4 dark:border-gray-800">
-          <Link href={ROUTES.home} onClick={close}>
+          <Link href={ROUTES.root} onClick={close}>
             <AppLogo />
           </Link>
         </div>

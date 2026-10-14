@@ -50,8 +50,8 @@ const SignupForm = () => {
         label="Password"
         type="password"
         autoComplete="new-password"
-        hint="At least 8 characters"
-        minLength={8}
+        hint="At least 10 characters"
+        minLength={10}
         required
       />
 

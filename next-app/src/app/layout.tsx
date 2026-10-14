@@ -1,18 +1,23 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import { SITE } from "@/constants";
 import Providers from "@/providers/Providers";
 import "./globals.css";
 
-// The favicon is src/app/icon.png (the Developers Mania mark) - Next.js picks it up automatically.
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  // Pages set `metadata.title` and it becomes e.g. "Dashboard | Next Template".
   title: { default: SITE.name, template: `%s | ${SITE.name}` },
   description: SITE.description,
 };
 
 const RootLayout = ({ children }: LayoutProps<"/">) => {
   return (
-    <html lang="en" className="h-full">
+    <html lang="en" className={`${inter.variable} h-full`}>
       <body className="flex min-h-full flex-col">
         <Providers>{children}</Providers>
       </body>

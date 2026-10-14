@@ -28,7 +28,7 @@ const LoginPage = () => {
           <p>
             No account?{" "}
             <Link
-              href={ROUTES.signup}
+              href={ROUTES.register}
               className="font-medium text-brand-600 hover:underline dark:text-brand-200"
             >
               Create one

@@ -10,7 +10,7 @@ const NotFound = () => {
       <p className="text-6xl font-semibold tracking-tight">404</p>
       <p className="muted">This page does not exist.</p>
       <div className="mt-2 flex flex-wrap justify-center gap-2">
-        <Link href={ROUTES.home} className={buttonStyles()}>
+        <Link href={ROUTES.root} className={buttonStyles()}>
           Back to home
         </Link>
         <Link

@@ -31,7 +31,7 @@ const ErrorPage = ({ error, retry }: ErrorProps) => {
       </p>
       <div className="mt-2 flex flex-wrap justify-center gap-2">
         <Button onClick={() => retry()}>Try again</Button>
-        <Link href={ROUTES.home} className={buttonStyles({ variant: "ghost" })}>
+        <Link href={ROUTES.root} className={buttonStyles({ variant: "ghost" })}>
           Back to home
         </Link>
       </div>

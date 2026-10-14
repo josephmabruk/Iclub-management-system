@@ -6,13 +6,13 @@ import { ROUTES } from "@/constants";
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <main className="flex flex-1 flex-col items-center justify-center gap-6 bg-gray-50 px-4 py-12 dark:bg-gray-950">
-      <Link href={ROUTES.home}>
+      <Link href={ROUTES.root}>
         <AppLogo size="lg" />
       </Link>
 
       {children}
 
-      <Link href={ROUTES.home} className="muted text-sm hover:underline">
+      <Link href={ROUTES.root} className="muted text-sm hover:underline">
         Back to the site
       </Link>
     </main>

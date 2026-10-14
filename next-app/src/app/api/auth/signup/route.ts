@@ -8,6 +8,8 @@ export async function POST(request: Request) {
 
   if (!name || !email || !password)
     return errorResponse("Name, email and password are required", 400);
+  if (password.length < 10)
+    return errorResponse("Password must be at least 10 characters long", 400);
   if (db.users.some((storedUser) => storedUser.email === email)) {
     return errorResponse("An account with this email already exists", 409);
   }

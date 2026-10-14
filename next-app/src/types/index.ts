@@ -4,6 +4,7 @@ export type User = {
   id: string;
   name: string;
   email: string;
+  club?: Club;
 };
 
 export type ProjectStatus = "active" | "paused" | "done";
@@ -23,4 +24,17 @@ export type LoginRequest = {
 
 export type SignupRequest = LoginRequest & {
   name: string;
+  club?: Club;
 };
+
+export type Club = {
+  id: string;
+  name: string;
+  readonly shortCode: string;
+  purpose: string;
+  foundingDate: string;
+  institution?: string;
+  setupStatus: SetupStatus;
+};
+
+export type SetupStatus = "in_progress" | "complete";
