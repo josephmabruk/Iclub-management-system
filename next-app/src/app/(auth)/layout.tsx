@@ -2,7 +2,6 @@ import Link from "next/link";
 import AppLogo from "@/components/shared/AppLogo";
 import { ROUTES } from "@/constants";
 
-
 /** Shared layout for ONLY login and signup: logo, the page's card, and a way back. */
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   return (

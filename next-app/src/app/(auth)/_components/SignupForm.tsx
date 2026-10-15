@@ -6,21 +6,32 @@ import Input from "@/components/ui/Input";
 import { ROUTES } from "@/constants";
 import { getErrorMessage } from "@/lib/utils";
 import { useSignupMutation } from "@/store/api/authApi";
+import { useState } from "react";
 
 const SignupForm = () => {
   /**VARIABLES */
   const router = useRouter();
   const [signup, { isLoading, error }] = useSignupMutation();
+  const [confirmError, setConfirmError] = useState("");
 
   /**FUNCTIONS */
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
 
+    const password = String(form.get("password"));
+    const confirm = String(form.get("confirm"));
+
+    if (password !== confirm) {
+      setConfirmError("Passwords do not match");
+      return;
+    }
+    setConfirmError("");
+
     const result = await signup({
       name: String(form.get("name")),
       email: String(form.get("email")),
-      password: String(form.get("password")),
+      password: password,
     });
 
     if (!result.error) router.push(ROUTES.dashboard);
@@ -51,6 +62,17 @@ const SignupForm = () => {
         type="password"
         autoComplete="new-password"
         hint="At least 10 characters"
+        minLength={10}
+        required
+      />
+
+      <Input
+        id="signup-confirm"
+        error={confirmError}
+        name="confirm"
+        label="Confirm Password"
+        type="password"
+        autoComplete="new-password"
         minLength={10}
         required
       />

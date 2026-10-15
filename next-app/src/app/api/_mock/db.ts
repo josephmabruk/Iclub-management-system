@@ -58,11 +58,11 @@ export const db: MockDb = (globalForMock.mockDb ??= {
 });
 
 /** Remove the password before sending a user to the browser. */
-const toPublicUser = ({ id, name, email, club}: StoredUser): User => ({
+const toPublicUser = ({ id, name, email, club }: StoredUser): User => ({
   id,
   name,
   email,
-  club
+  club,
 });
 
 /** Respond with the user and set the session cookie. The cookie is just the user id, which is fine for a mock only! */
