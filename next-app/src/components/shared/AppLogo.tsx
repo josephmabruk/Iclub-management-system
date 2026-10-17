@@ -19,15 +19,15 @@ type AppLogoProps = {
 const AppLogo = ({
   name = SITE.name,
   size = "md",
-  withWordmark = true,
+  withWordmark = false,
 }: AppLogoProps) => {
   return (
     <span className="inline-flex items-center gap-2">
       <Image
-        src="/logo-developers-mania.png"
+        src="/logo-iclub.png"
         alt=""
-        width={200}
-        height={200}
+        width={962}
+        height={452}
         // Above the fold on every page, and only 1.7 KB - skip lazy loading and the optimizer.
         loading="eager"
         unoptimized

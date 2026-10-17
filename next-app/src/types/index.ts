@@ -32,14 +32,19 @@ export type Club = {
   setupStatus: SetupStatus;
 };
 
-export type SetupStatus = "in_progress" | "complete";
+export type CreateClubRequest = Pick<
+  Club,
+  "name" | "shortCode" | "purpose" | "foundingDate"
+>;
 
 //THE TYPES FOR THE FIELD INSIDE THE CLUB
+export type SetupStatus = "in_progress" | "complete";
+
 export type MembershipSource = "import_roster" | "officer_added";
 
 export type Unit = {
-  id: String;
-  name: String;
+  id: string;
+  name: string;
 };
 
 export type PositionDraft = {

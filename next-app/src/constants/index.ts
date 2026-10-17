@@ -28,3 +28,12 @@ export const APP_NAV = [
   { label: "Dashboard", href: ROUTES.dashboard },
   { label: "Settings", href: ROUTES.settings },
 ] as const;
+
+export const SETUP_STEPS = [
+  { key: "profile", label: "Profile", href: "/setup/profile" },
+  { key: "institution", label: "Institution", href: "/setup/institution" },
+  { key: "units", label: "Units", href: "/setup/units" },
+  { key: "membership", label: "Membership", href: "/setup/membership" },
+  { key: "positions", label: "Positions", href: "/setup/positions" },
+  { key: "term", label: "Term setup", href: "/setup/term" },
+] as const;
