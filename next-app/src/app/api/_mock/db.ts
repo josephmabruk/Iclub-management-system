@@ -89,6 +89,11 @@ export const getSessionUser = async () => {
   return user && toPublicUser(user);
 };
 
+export const getSessionRecord = async () => {
+  const userId = (await cookies()).get(SESSION_COOKIE)?.value;
+  return db.users.find((storedUser) => storedUser.id === userId);
+};
+
 /** Error responses use `{ message }`, which is what `getErrorMessage` in lib/utils expects. */
 export const errorResponse = (message: string, status: number) =>
   NextResponse.json({ message }, { status });

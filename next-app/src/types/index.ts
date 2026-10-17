@@ -9,14 +9,6 @@ export type User = {
 
 export type ProjectStatus = "active" | "paused" | "done";
 
-export type Project = {
-  id: string;
-  name: string;
-  description: string;
-  status: ProjectStatus;
-  updatedAt: string;
-};
-
 export type LoginRequest = {
   email: string;
   password: string;
@@ -24,7 +16,6 @@ export type LoginRequest = {
 
 export type SignupRequest = LoginRequest & {
   name: string;
-  club?: Club;
 };
 
 export type Club = {
@@ -34,7 +25,41 @@ export type Club = {
   purpose: string;
   foundingDate: string;
   institution?: string;
+  units: Unit[];
+  membershipSource?: MembershipSource;
+  positions: PositionDraft[];
+  term?: Term;
   setupStatus: SetupStatus;
 };
 
 export type SetupStatus = "in_progress" | "complete";
+
+//THE TYPES FOR THE FIELD INSIDE THE CLUB
+export type MembershipSource = "import_roster" | "officer_added";
+
+export type Unit = {
+  id: String;
+  name: String;
+};
+
+export type PositionDraft = {
+  id: string;
+  name: string;
+  unitId: string | null;
+  requiredOffice: boolean;
+  inVerifiedRoster: boolean;
+};
+
+export type Term = {
+  name: string;
+  startDate: string;
+  endDate: string;
+};
+
+export type Project = {
+  id: string;
+  name: string;
+  description: string;
+  status: ProjectStatus;
+  updatedAt: string;
+};
