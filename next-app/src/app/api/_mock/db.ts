@@ -91,6 +91,9 @@ export const getSessionUser = async () => {
 
 export const getSessionRecord = async () => {
   const userId = (await cookies()).get(SESSION_COOKIE)?.value;
+
+  //Returns stored user not the public copy of the user. This is useful for when you want to modify the user object in the db.
+
   return db.users.find((storedUser) => storedUser.id === userId);
 };
 
