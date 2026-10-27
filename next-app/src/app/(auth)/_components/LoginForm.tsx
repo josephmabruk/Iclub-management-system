@@ -22,7 +22,7 @@ const LoginForm = () => {
       password: String(form.get("password")),
     });
 
-    if (!result.error) router.push(ROUTES.dashboard);
+    if (!result.error) router.push(ROUTES.home);
   };
 
   /**COMPONENT */

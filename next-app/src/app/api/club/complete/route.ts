@@ -18,4 +18,3 @@ export async function POST() {
   user.club = { ...user.club, setupStatus: "complete" };
   return NextResponse.json(user.club);
 }
-

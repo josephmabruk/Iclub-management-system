@@ -1,5 +1,6 @@
 import type { Club, CreateClubRequest, UpdateClubRequest } from "@/types";
 import { baseApi } from "./baseApi";
+import { authApi } from "./authApi";
 
 export const clubApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
@@ -15,7 +16,16 @@ export const clubApi = baseApi.injectEndpoints({
 
     completeClub: build.mutation<Club, void>({
       query: () => ({ url: "/club/complete", method: "POST" }),
-      invalidatesTags: ["User"],
+      onQueryStarted: async (_arg, { dispatch, queryFulfilled }) => {
+        try {
+          const { data: club } = await queryFulfilled;
+          dispatch(
+            authApi.util.updateQueryData("getMe", undefined, (draft) => {
+              draft.club = club;
+            }),
+          );
+        } catch {}
+      },
     }),
   }),
 });
