@@ -1,9 +1,8 @@
 // Application-wide constants
 
 export const SITE = {
-  name: "Next Template",
-  description:
-    "A Next.js + Redux starter for apps that talk to a separate backend.",
+  name: "School Manager",
+  description: "A school management system starter built with Next.js.",
   owner: "Info-Space Meta",
 } as const;
 
