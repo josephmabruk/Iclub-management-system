@@ -37,6 +37,13 @@ export type CreateClubRequest = Pick<
   "name" | "shortCode" | "purpose" | "foundingDate"
 >;
 
+export type UpdateClubRequest = Partial<
+  Pick<
+    Club,
+    "institution" | "units" | "membershipSource" | "positions" | "term"
+  >
+>;
+
 //THE TYPES FOR THE FIELD INSIDE THE CLUB
 export type SetupStatus = "in_progress" | "complete";
 

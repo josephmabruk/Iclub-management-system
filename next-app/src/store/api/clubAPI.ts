@@ -1,13 +1,19 @@
-import type { Club, CreateClubRequest } from "@/types";
+import type { Club, CreateClubRequest, UpdateClubRequest } from "@/types";
 import { baseApi } from "./baseApi";
 
 export const clubApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     createClub: build.mutation<Club, CreateClubRequest>({
       query: (body) => ({ url: "/club", method: "POST", body }),
-      // TODO: tell the cache the "User" data is now out of date
+      invalidatesTags: ["User"],
+    }),
+    // NEW: add this entry
+    updateClub: build.mutation<Club, UpdateClubRequest>({
+      query: (body) => ({ url: "/club", method: "PATCH", body }),
+      invalidatesTags: ["User"],
     }),
   }),
 });
 
-export const { useCreateClubMutation } = clubApi;
+// CHANGED: export both hooks
+export const { useCreateClubMutation, useUpdateClubMutation } = clubApi;
