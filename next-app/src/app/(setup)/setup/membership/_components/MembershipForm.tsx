@@ -78,9 +78,7 @@ const MembershipForm = () => {
               <span className="block text-sm font-semibold">
                 {option.title}
               </span>
-              <span className="muted block text-sm">
-                {option.description}
-              </span>
+              <span className="muted block text-sm">{option.description}</span>
             </span>
           </label>
         ))}

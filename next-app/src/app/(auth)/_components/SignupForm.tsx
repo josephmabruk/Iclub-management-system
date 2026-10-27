@@ -34,7 +34,7 @@ const SignupForm = () => {
       password: password,
     });
 
-    if (!result.error) router.push(ROUTES.dashboard);
+    if (!result.error) router.push(ROUTES.setup);
   };
 
   /**COMPONENT */

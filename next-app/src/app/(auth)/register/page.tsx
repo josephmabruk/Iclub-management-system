@@ -16,7 +16,7 @@ const RegisterPage = () => {
       header={
         <div>
           <h1 className="text-lg font-semibold">Create your account</h1>
-          <p className="muted text-sm">Next you&aposll set up your club</p>
+          <p className="muted text-sm">Next you&apos;ll set up your club</p>
         </div>
       }
       footer={

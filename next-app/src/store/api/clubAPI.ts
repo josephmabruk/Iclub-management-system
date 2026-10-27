@@ -12,8 +12,17 @@ export const clubApi = baseApi.injectEndpoints({
       query: (body) => ({ url: "/club", method: "PATCH", body }),
       invalidatesTags: ["User"],
     }),
+
+    completeClub: build.mutation<Club, void>({
+      query: () => ({ url: "/club/complete", method: "POST" }),
+      invalidatesTags: ["User"],
+    }),
   }),
 });
 
 // CHANGED: export both hooks
-export const { useCreateClubMutation, useUpdateClubMutation } = clubApi;
+export const {
+  useCreateClubMutation,
+  useUpdateClubMutation,
+  useCompleteClubMutation,
+} = clubApi;
