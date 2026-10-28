@@ -75,3 +75,16 @@ export type Project = {
   status: ProjectStatus;
   updatedAt: string;
 };
+
+//what is shown on the home page
+export type HomeSummary = {
+  activeMembers: number;
+  leadershipVacancies: number;
+  upcomingActivities: {
+    id: string;
+    name: string;
+    date: string;
+    startTime: string;
+    endTime: string;
+  }[];
+};

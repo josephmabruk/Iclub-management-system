@@ -14,6 +14,13 @@ export const ROUTES = {
   contact: "/contact",
   dashboard: "/dashboard",
   settings: "/settings",
+  members: "/members",
+  leadership: "/leadership",
+  activities: "/activities",
+  attendance: "/attendance",
+  records: "/records",
+  handovers: "/handovers",
+  finance: "/finance",
   project: (id: string) => `/projects/${id}`,
 } as const;
 
@@ -25,8 +32,15 @@ export const MAIN_NAV = [
 
 /** Links shown in the signed-in app sidebar. */
 export const APP_NAV = [
-  { label: "Dashboard", href: ROUTES.dashboard },
-  { label: "Settings", href: ROUTES.settings },
+  { label: "Home", href: ROUTES.home, ready: true },
+  { label: "Members", href: ROUTES.members, ready: false },
+  { label: "Leadership", href: ROUTES.leadership, ready: false },
+  { label: "Activities", href: ROUTES.activities, ready: false },
+  { label: "Attendance", href: ROUTES.attendance, ready: false },
+  { label: "Finance", href: ROUTES.finance, ready: false },
+  { label: "Records & custody", href: ROUTES.records, ready: false },
+  { label: "Handovers", href: ROUTES.handovers, ready: false },
+
 ] as const;
 
 export const SETUP_STEPS = [
