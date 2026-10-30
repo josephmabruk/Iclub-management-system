@@ -1,6 +1,6 @@
-# Next Template
+# School Management System Starter
 
-A Next.js 16 starter for client-side apps that talk to a **separate backend**. It comes with:
+A school management dashboard starter built with Next.js 16. It uses the provided iClub SRS as a requirements-document structure, but the sample records and modules are school-oriented rather than club-specific. It comes with:
 
 - **Next.js 16** (App Router, Turbopack), **React 19**, **TypeScript**, **Tailwind CSS 4**
 - **Redux Toolkit** for app state and **RTK Query** for API calls
@@ -19,7 +19,7 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000). Log in with **demo@example.com / password**, or sign up.
 
-The template runs with no backend: requests go to a small mock API in `src/app/api`. To use your own backend, see [Connecting your backend](#connecting-your-backend).
+The dashboard currently displays illustrative sample data. The included authentication and API routes are still mock implementations; school records are not persisted, and the dashboard does not process payments. Connect a real backend before using it with actual student or financial data.
 
 ## Scripts
 
