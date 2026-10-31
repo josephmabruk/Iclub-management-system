@@ -21,6 +21,7 @@ export const ROUTES = {
   records: "/records",
   handovers: "/handovers",
   finance: "/finance",
+  membersImport: "/members/import",
   project: (id: string) => `/projects/${id}`,
 } as const;
 
@@ -33,14 +34,13 @@ export const MAIN_NAV = [
 /** Links shown in the signed-in app sidebar. */
 export const APP_NAV = [
   { label: "Home", href: ROUTES.home, ready: true },
-  { label: "Members", href: ROUTES.members, ready: false },
+  { label: "Members", href: ROUTES.members, ready: true },
   { label: "Leadership", href: ROUTES.leadership, ready: false },
   { label: "Activities", href: ROUTES.activities, ready: false },
   { label: "Attendance", href: ROUTES.attendance, ready: false },
   { label: "Finance", href: ROUTES.finance, ready: false },
   { label: "Records & custody", href: ROUTES.records, ready: false },
   { label: "Handovers", href: ROUTES.handovers, ready: false },
-
 ] as const;
 
 export const SETUP_STEPS = [
@@ -51,3 +51,15 @@ export const SETUP_STEPS = [
   { key: "positions", label: "Positions", href: "/setup/positions" },
   { key: "term", label: "Term setup", href: "/setup/term" },
 ] as const;
+
+//Member data labels
+export const MEMBER_STATUS_LABELS = {
+  active: "Active",
+  departing: "Departing",
+  inactive: "Inactive",
+} as const;
+
+export const MEMBERSHIP_SOURCES = {
+  imported: "import_roster",
+  officer: "officer_added",
+} as const;

@@ -1,4 +1,6 @@
 // Shared TypeScript types. Keep these in sync with your backend's API responses.
+import type { MEMBER_STATUS_LABELS, MEMBERSHIP_SOURCES } from "@/constants";
+
 
 export type User = {
   id: string;
@@ -36,18 +38,16 @@ export type CreateClubRequest = Pick<
   Club,
   "name" | "shortCode" | "purpose" | "foundingDate"
 >;
-
+//Partial makes every field in the list optional, so one request can carry just the institution, and another just the units.
 export type UpdateClubRequest = Partial<
-  Pick<
-    Club,
-    "institution" | "units" | "membershipSource" | "positions" | "term"
-  >
+ Pick<Club, "institution" | "units" | "membershipSource" | "positions" | "term">
 >;
 
 //THE TYPES FOR THE FIELD INSIDE THE CLUB
 export type SetupStatus = "in_progress" | "complete";
 
-export type MembershipSource = "import_roster" | "officer_added";
+export type MembershipSource =
+  (typeof MEMBERSHIP_SOURCES)[keyof typeof MEMBERSHIP_SOURCES];
 
 export type Unit = {
   id: string;
@@ -74,17 +74,4 @@ export type Project = {
   description: string;
   status: ProjectStatus;
   updatedAt: string;
-};
-
-//what is shown on the home page
-export type HomeSummary = {
-  activeMembers: number;
-  leadershipVacancies: number;
-  upcomingActivities: {
-    id: string;
-    name: string;
-    date: string;
-    startTime: string;
-    endTime: string;
-  }[];
 };

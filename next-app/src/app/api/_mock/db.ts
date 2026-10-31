@@ -6,10 +6,14 @@
  */
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import type { Project, User } from "@/types";
+import type { Project, User, Member } from "@/types";
 
 type StoredUser = User & { password: string };
-type MockDb = { users: StoredUser[]; projects: Project[] };
+type MockDb = {
+  users: StoredUser[];
+  projects: Project[];
+  members: Record<string, Member[]>;
+};
 
 const SESSION_COOKIE = "session";
 
@@ -55,6 +59,7 @@ export const db: MockDb = (globalForMock.mockDb ??= {
       updatedAt: "2026-07-02T10:00:00.000Z",
     },
   ],
+  members: {},
 });
 
 /** Remove the password before sending a user to the browser. */
