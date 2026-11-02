@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { db, delay, errorResponse, getSessionRecord } from "@/app/api/_mock/db";
+import { MEMBERSHIP_SOURCES } from "@/constants";
 import type { AddMemberRequest, Member } from "@/types";
 
 /** GET /api/members: the signed-in user's club register. */
@@ -21,7 +22,7 @@ export async function POST(request: Request) {
   if (!user?.club) return errorResponse("Not signed in", 401);
   const club = user.club;
 
-  if (club.membershipSource !== "officer_added") {
+  if (club.membershipSource !== MEMBERSHIP_SOURCES.officer) {
     return errorResponse(
       "This club's membership follows an imported roster. Add members by importing a roster.",
       409,
@@ -38,8 +39,6 @@ export async function POST(request: Request) {
 
   const list = (db.members[club.id] ??= []);
 
-  // TODO: if a member in `list` already has this number (ignore capitals),
-  //       return a 409 error: "A member with this number already exists"
   if (list.some((m) => m.memberNumber.toLowerCase() === number.toLowerCase()))
     return errorResponse("A member with this number already exists", 409);
 

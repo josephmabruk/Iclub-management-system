@@ -1,4 +1,12 @@
-import type { AddMemberRequest, Member } from "@/types";
+
+import type {
+  AddMemberRequest,
+  Member,
+  ImportReport,
+  DryRunRequest,
+  CommitImportRequest,
+  CommitImportResult,
+} from "@/types";
 import { baseApi } from "./baseApi";
 
 export const membersApi = baseApi.injectEndpoints({
@@ -11,7 +19,23 @@ export const membersApi = baseApi.injectEndpoints({
       query: (body) => ({ url: "/members", method: "POST", body }),
       invalidatesTags: ["Member", "Home"],
     }),
+    dryRunImport: build.mutation<ImportReport, DryRunRequest>({
+      query: (body) => ({
+        url: "/members/import/dry-run",
+        method: "POST",
+        body,
+      }),
+    }),
+    commitImport: build.mutation<CommitImportResult, CommitImportRequest>({
+      query: (body) => ({url: "/members/import/commit", method: "POST", body}),
+      invalidatesTags: ["Member", "Home"],
+    }),
   }),
 });
 
-export const { useGetMembersQuery, useAddMemberMutation } = membersApi;
+export const {
+  useGetMembersQuery,
+  useAddMemberMutation,
+  useDryRunImportMutation,
+  useCommitImportMutation,
+} = membersApi;

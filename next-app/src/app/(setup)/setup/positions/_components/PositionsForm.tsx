@@ -40,8 +40,7 @@ const PositionsForm = () => {
     );
   };
 
-  const addPosition = () =>
-    setPositions((current) => [...current, newPosition()]);
+  const addPosition = () => setPositions((current) => [...current, newPosition()]);
 
   const removePosition = (id: string) => {
     setPositions((current) => current.filter((p) => p.id !== id));
@@ -62,13 +61,15 @@ const PositionsForm = () => {
     // TODO: reject two positions with the same name in the same unit
     //       (see "Your challenge" below)
     const keys = cleaned.map(
-      (p) => `${p.name.toLowerCase()}|${p.unitId ?? "club"}`,
+        //Checks whether the unit names have the same name and unitId. If they do, it will return a string with the name and unitId separated by a pipe character. If they don't, it will return a string with the name and "club" as the unitId.
+        (p) => `${p.name.toLowerCase()}|${p.unitId ?? "club"}`,
     );
     if (new Set(keys).size !== keys.length) {
-      setFormError("Two positions have the same name in the same unit");
-      return;
+        setFormError("Two positions have the same name in the same unit");
+        return;
     }
     setFormError("");
+
 
     const result = await updateClub({ positions: cleaned });
     if (!result.error) router.push(SETUP_STEPS[5].href);

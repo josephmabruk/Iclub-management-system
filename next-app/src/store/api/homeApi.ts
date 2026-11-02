@@ -5,6 +5,7 @@ export const homeApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     getHomeSummary: build.query<HomeSummary, void>({
       query: () => "/home",
+      providesTags: ["Home"],
     }),
   }),
 });

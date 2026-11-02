@@ -5,6 +5,11 @@ import { useState } from "react";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import { useAuth } from "@/hooks/useAuth";
+import { getErrorMessage } from "@/lib/utils";
+import { useDryRunImportMutation } from "@/store/api/membersApi";
+import ImportReportView from "./ImportReportReview";
+import CommitPanel from "./CommitPanel";
+import type {RowResolution} from "@/types";
 
 type Row = Record<string, string>;
 type Mapping = { memberNumber: string; fullName: string; unit: string };
@@ -59,12 +64,17 @@ const ImportWizard = () => {
   const [fileName, setFileName] = useState("");
   const [headers, setHeaders] = useState<string[]>([]);
   const [rows, setRows] = useState<Row[]>([]);
+  const [
+    dryRun,
+    { data: report, isLoading: checking, error: dryRunError, reset },
+  ] = useDryRunImportMutation();
   const [mapping, setMapping] = useState<Mapping>({
     memberNumber: "",
     fullName: "",
     unit: "",
   });
   const [parseError, setParseError] = useState("");
+  const [resolutions, setResolutions] = useState<Record<number, RowResolution>>({});
 
   let mappingError = "";
   if (!mapping.memberNumber || !mapping.fullName) {
@@ -75,6 +85,8 @@ const ImportWizard = () => {
 
   /**FUNCTIONS */
   const handleFile = (file: File) => {
+    reset();
+    setResolutions({});
     setParseError("");
     Papa.parse<Row>(file, {
       header: true,
@@ -102,8 +114,27 @@ const ImportWizard = () => {
     });
   };
 
-  const changeMapping = (field: keyof Mapping, value: string) =>
+  const changeMapping = (field: keyof Mapping, value: string) => {
+    reset();
+    setResolutions({});
     setMapping((current) => ({ ...current, [field]: value }));
+  };
+
+  const unitName = (id: string | null) =>
+    user?.club?.units.find((unit) => unit.id === id)?.name ?? "No unit";
+
+  const resolve = (rowNumber: number, decision: RowResolution) =>
+    setResolutions((current) => ({...current, [rowNumber]: decision}));
+
+  const handleDryRun = () =>
+    dryRun({
+      rows: rows.map((row, index) => ({
+        rowNumber: index + 2, //row 1 is the header
+        memberNumber: cell(row, mapping.memberNumber),
+        fullName: cell(row, mapping.fullName),
+        unit: cell(row, mapping.unit),
+      })),
+    });
 
   /**COMPONENT */
   if (user?.club?.membershipSource !== "import_roster") {
@@ -218,9 +249,33 @@ const ImportWizard = () => {
           )}
           <div className="mt-6 flex justify-end">
             {/* Wired up in part 2, when the server can run the dry run. */}
-            <Button disabled={Boolean(mappingError)}>
-              Continue to dry run
+
+            <Button
+              onClick={handleDryRun}
+              loading={checking}
+              disabled={Boolean(mappingError)}
+            >
+              Run dry run
             </Button>
+
+            {dryRunError && (
+              <p role="alert" className="text-sm text-red-600">
+                {getErrorMessage(dryRunError)}
+              </p>
+            )}
+
+            {report && (
+              <>
+              <ImportReportView
+                report = {report}
+                units = {user?.club?.units ?? []}
+                resolutions = {resolutions}
+                onResolve = {resolve}
+              />
+              <CommitPanel report = {report} resolutions = {resolutions} />
+                </>
+            )}
+          
           </div>
         </Card>
       )}

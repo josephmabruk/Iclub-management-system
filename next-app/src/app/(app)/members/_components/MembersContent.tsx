@@ -66,11 +66,10 @@ const MembersContent = () => {
         )}
 
         {club?.membershipSource === "import_roster" && (
-          <Link href = {ROUTES.membersImport} className = {buttonStyles()}>
+          <Link href={ROUTES.membersImport} className={buttonStyles()}>
             Import Roster
           </Link>
         )}
-
       </header>
 
       {adding && (
