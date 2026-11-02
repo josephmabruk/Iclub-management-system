@@ -77,7 +77,6 @@ const ImportReportView = ({ report, units, resolutions, onResolve }: Props) => {
                     {" · "}
                     {issue.memberNumber || "no number"} {issue.fullName}
                     <span className="block text-red-700">{issue.reason}</span>
-
                     <div className="mt-2 flex flex-wrap items-center gap-2">
                       {issue.kind === "unit" && (
                         <select
@@ -149,7 +148,9 @@ const ImportReportView = ({ report, units, resolutions, onResolve }: Props) => {
 
         {departures.length > 0 && (
           <section>
-            <h3 className="mb-2 font-semibold">Would be proposed as Departing</h3>
+            <h3 className="mb-2 font-semibold">
+              Would be proposed as Departing
+            </h3>
             <p className="muted mb-2 text-xs">
               Active members missing from this roster. Nothing is deleted, and
               their history is kept.

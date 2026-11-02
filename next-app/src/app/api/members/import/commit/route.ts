@@ -5,7 +5,8 @@ import type { CommitImportRequest, CommitImportResult } from "@/types";
 
 /** POST /api/members/import/commit: apply the saved dry-run report. */
 export async function POST(request: Request) {
-  const { reportId, resolutions } = (await request.json()) as CommitImportRequest;
+  const { reportId, resolutions } =
+    (await request.json()) as CommitImportRequest;
   await delay();
 
   const user = await getSessionRecord();
@@ -18,10 +19,16 @@ export async function POST(request: Request) {
   // The server applies ITS saved report. The browser only names it.
   const report = db.importReports[club.id];
   if (!report || report.id !== reportId)
-    return errorResponse("That report no longer exists. Run the dry run again.", 409);
+    return errorResponse(
+      "That report no longer exists. Run the dry run again.",
+      409,
+    );
   if (new Date(report.expiresAt).getTime() < Date.now()) {
     delete db.importReports[club.id];
-    return errorResponse("This report has expired. Run the dry run again.", 410);
+    return errorResponse(
+      "This report has expired. Run the dry run again.",
+      410,
+    );
   }
 
   const register = (db.members[club.id] ??= []);
@@ -35,7 +42,10 @@ export async function POST(request: Request) {
   for (const issue of [...report.duplicates, ...report.unmatched]) {
     const decision = resolutions?.[issue.rowNumber];
     if (!decision)
-      return errorResponse(`Row ${issue.rowNumber} still needs a decision`, 409);
+      return errorResponse(
+        `Row ${issue.rowNumber} still needs a decision`,
+        409,
+      );
 
     if (decision.action === "exclude") {
       excluded += 1;
@@ -44,7 +54,10 @@ export async function POST(request: Request) {
 
     const unit = club.units.find((u) => u.id === decision.unitId);
     if (!unit)
-      return errorResponse(`Row ${issue.rowNumber}: that unit does not exist`, 400);
+      return errorResponse(
+        `Row ${issue.rowNumber}: that unit does not exist`,
+        400,
+      );
     if (!issue.memberNumber || !issue.fullName)
       return errorResponse(
         `Row ${issue.rowNumber} has no member number or name, so it can only be excluded`,

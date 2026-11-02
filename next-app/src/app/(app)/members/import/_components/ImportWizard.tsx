@@ -9,7 +9,7 @@ import { getErrorMessage } from "@/lib/utils";
 import { useDryRunImportMutation } from "@/store/api/membersApi";
 import ImportReportView from "./ImportReportReview";
 import CommitPanel from "./CommitPanel";
-import type {RowResolution} from "@/types";
+import type { RowResolution } from "@/types";
 
 type Row = Record<string, string>;
 type Mapping = { memberNumber: string; fullName: string; unit: string };
@@ -74,7 +74,9 @@ const ImportWizard = () => {
     unit: "",
   });
   const [parseError, setParseError] = useState("");
-  const [resolutions, setResolutions] = useState<Record<number, RowResolution>>({});
+  const [resolutions, setResolutions] = useState<Record<number, RowResolution>>(
+    {},
+  );
 
   let mappingError = "";
   if (!mapping.memberNumber || !mapping.fullName) {
@@ -124,7 +126,7 @@ const ImportWizard = () => {
     user?.club?.units.find((unit) => unit.id === id)?.name ?? "No unit";
 
   const resolve = (rowNumber: number, decision: RowResolution) =>
-    setResolutions((current) => ({...current, [rowNumber]: decision}));
+    setResolutions((current) => ({ ...current, [rowNumber]: decision }));
 
   const handleDryRun = () =>
     dryRun({
@@ -266,16 +268,15 @@ const ImportWizard = () => {
 
             {report && (
               <>
-              <ImportReportView
-                report = {report}
-                units = {user?.club?.units ?? []}
-                resolutions = {resolutions}
-                onResolve = {resolve}
-              />
-              <CommitPanel report = {report} resolutions = {resolutions} />
-                </>
+                <ImportReportView
+                  report={report}
+                  units={user?.club?.units ?? []}
+                  resolutions={resolutions}
+                  onResolve={resolve}
+                />
+                <CommitPanel report={report} resolutions={resolutions} />
+              </>
             )}
-          
           </div>
         </Card>
       )}

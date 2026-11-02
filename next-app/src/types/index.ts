@@ -1,5 +1,9 @@
 // Shared TypeScript types. Keep these in sync with your backend's API responses.
-import { MEMBER_STATUS_LABELS } from "@/constants";
+import {
+  MEMBER_STATUS_LABELS,
+  ATTENDANCE_LABELS,
+  MEMBERSHIP_SOURCES,
+} from "@/constants";
 
 export type User = {
   id: string;
@@ -90,6 +94,7 @@ export type HomeSummary = {
   }[];
 };
 
+//TYPES FOR MEMBERS PAGE
 export type MemberStatus = keyof typeof MEMBER_STATUS_LABELS;
 
 export type Member = {
@@ -113,6 +118,7 @@ export type MemberEvent = {
   text: string;
 };
 
+//TYPES FOR THE CASE OF IMPORT ROSTER
 export type ImportRowInput = {
   rowNumber: number;
   memberNumber: string;
@@ -156,8 +162,7 @@ export type ImportReport = {
 export type DryRunRequest = { rows: ImportRowInput[] };
 
 export type RowResolution =
-  | { action: "exclude" }
-  | { action: "match_unit"; unitId: string };
+  { action: "exclude" } | { action: "match_unit"; unitId: string };
 
 export type CommitImportRequest = {
   reportId: string;
@@ -168,4 +173,90 @@ export type CommitImportResult = {
   added: number;
   departed: number;
   excluded: number;
+};
+
+//TYPES FOR IMPORT ROSTER
+export type Appointment = {
+  id: string;
+  positionId: string;
+  memberId: string;
+  termName: string;
+  appointedAt: string;
+  appointedBy: string;
+  endedAt?: string;
+};
+
+export type LeadershipStatus = "verified" | "vacant" | "attention";
+
+export type LeadershipRow = {
+  positionId: string;
+  positionName: string;
+  unitId: string | null;
+  requiredOffice: boolean;
+  inVerifiedRoster: boolean;
+  status: LeadershipStatus;
+  holder: { memberId: string; fullName: string; memberNumber: string } | null;
+};
+
+export type AppointRequest = { positionId: string; memberId: string };
+export type EndAppointmentRequest = { positionId: string };
+
+//ATTENDANCE TYPES
+export type AttendanceStatus = keyof typeof ATTENDANCE_LABELS;
+export type ActivityStatus = "scheduled" | "cancelled";
+
+export type Activity = {
+  id: string;
+  name: string;
+  date: string; // YYYY-MM-DD
+  startTime: string; // HH:MM
+  endTime: string;
+  location: string;
+  unitId: string | null; // null = the whole club
+  status: ActivityStatus;
+  cancelReason?: string;
+  history: MemberEvent[];
+};
+
+export type CreateActivityRequest = Pick<
+  Activity,
+  "name" | "date" | "startTime" | "endTime" | "location" | "unitId"
+>;
+export type RescheduleRequest = {
+  id: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  reason: string;
+};
+export type CancelRequest = { id: string; reason: string };
+
+export type AttendanceMark = {
+  status: AttendanceStatus;
+  by: string;
+  at: string;
+};
+export type AttendanceRow = {
+  memberId: string;
+  memberNumber: string;
+  fullName: string;
+  unitId: string | null;
+  mark: AttendanceMark | null;
+};
+export type AttendanceSheet = { activity: Activity; rows: AttendanceRow[] };
+export type MarkRequest = {
+  activityId: string;
+  memberId: string;
+  status: AttendanceStatus;
+};
+
+export type ParticipationRow = {
+  memberId: string;
+  memberNumber: string;
+  fullName: string;
+  inScope: number;
+  present: number;
+  excused: number;
+  absent: number;
+  rate: number | null;
 };

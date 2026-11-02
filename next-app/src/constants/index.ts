@@ -22,6 +22,7 @@ export const ROUTES = {
   handovers: "/handovers",
   finance: "/finance",
   membersImport: "/members/import",
+  attendanceFor: (id: string) => `/attendance/${id}`,
   project: (id: string) => `/projects/${id}`,
 } as const;
 
@@ -35,9 +36,9 @@ export const MAIN_NAV = [
 export const APP_NAV = [
   { label: "Home", href: ROUTES.home, ready: true },
   { label: "Members", href: ROUTES.members, ready: true },
-  { label: "Leadership", href: ROUTES.leadership, ready: false },
-  { label: "Activities", href: ROUTES.activities, ready: false },
-  { label: "Attendance", href: ROUTES.attendance, ready: false },
+  { label: "Leadership", href: ROUTES.leadership, ready: true },
+  { label: "Activities", href: ROUTES.activities, ready: true },
+  { label: "Attendance", href: ROUTES.attendance, ready: true },
   { label: "Finance", href: ROUTES.finance, ready: false },
   { label: "Records & custody", href: ROUTES.records, ready: false },
   { label: "Handovers", href: ROUTES.handovers, ready: false },
@@ -62,4 +63,11 @@ export const MEMBER_STATUS_LABELS = {
 export const MEMBERSHIP_SOURCES = {
   imported: "import_roster",
   officer: "officer_added",
+} as const;
+
+//ATTENDANCE STATUS LABELS
+export const ATTENDANCE_LABELS = {
+  present: "Present",
+  absent: "Absent",
+  excused: "Excused",
 } as const;

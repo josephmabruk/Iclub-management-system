@@ -1,4 +1,3 @@
-
 import type {
   AddMemberRequest,
   Member,
@@ -27,7 +26,11 @@ export const membersApi = baseApi.injectEndpoints({
       }),
     }),
     commitImport: build.mutation<CommitImportResult, CommitImportRequest>({
-      query: (body) => ({url: "/members/import/commit", method: "POST", body}),
+      query: (body) => ({
+        url: "/members/import/commit",
+        method: "POST",
+        body,
+      }),
       invalidatesTags: ["Member", "Home"],
     }),
   }),

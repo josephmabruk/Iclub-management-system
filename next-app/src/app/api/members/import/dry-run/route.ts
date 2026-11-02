@@ -1,4 +1,3 @@
-
 import { NextResponse } from "next/server";
 import { db, delay, errorResponse, getSessionRecord } from "@/app/api/_mock/db";
 import { MEMBERSHIP_SOURCES } from "@/constants";
@@ -65,7 +64,11 @@ export async function POST(request: Request) {
 
     const first = firstSeen.get(key);
     if (first !== undefined) {
-      report.duplicates.push({ ...base, reason: `Repeats row ${first}`, kind: "duplicate", });
+      report.duplicates.push({
+        ...base,
+        reason: `Repeats row ${first}`,
+        kind: "duplicate",
+      });
       continue;
     }
     firstSeen.set(key, row.rowNumber);
