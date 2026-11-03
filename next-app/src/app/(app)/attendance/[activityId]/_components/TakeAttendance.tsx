@@ -1,12 +1,13 @@
 "use client";
 
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
-import Button from "@/components/ui/Button";
+import Button, { buttonStyles } from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import Input from "@/components/ui/Input";
 import StateLoading from "@/components/ui/StateLoading";
-import { ATTENDANCE_LABELS } from "@/constants";
+import { ATTENDANCE_LABELS, ROUTES } from "@/constants";
 import { formatDay } from "@/lib/format";
 import { getErrorMessage } from "@/lib/utils";
 import {
@@ -25,7 +26,7 @@ const TakeAttendance = () => {
     isLoading,
     isError,
   } = useGetAttendanceSheetQuery(activityId);
-  const [mark, { error }] = useMarkAttendanceMutation();
+  const [mark, { isLoading: saving, error }] = useMarkAttendanceMutation();
   const [search, setSearch] = useState("");
 
   /**COMPONENT */
@@ -40,6 +41,7 @@ const TakeAttendance = () => {
 
   const { activity, rows } = sheet;
   const marked = rows.filter((row) => row.mark).length;
+  const unmarked = rows.length - marked;
   const cancelled = activity.status === "cancelled";
   const visible = rows.filter((row) =>
     `${row.fullName} ${row.memberNumber}`
@@ -50,6 +52,12 @@ const TakeAttendance = () => {
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-4">
       <header>
+        <Link
+          href={ROUTES.attendance}
+          className="text-sm text-brand-700 hover:underline"
+        >
+          ← Back
+        </Link>
         <h1 className="text-2xl font-semibold">Take attendance</h1>
         <p className="font-medium">{activity.name}</p>
         <p className="muted text-sm">
@@ -80,7 +88,8 @@ const TakeAttendance = () => {
           />
         </div>
         <p className="muted mt-2 text-xs">
-          Tap Present, Absent or Excused. Each choice saves immediately.
+          {saving ? "Saving..." : "All changes saved."} Tap Present, Absent or
+          Excused. Each choice saves immediately.
         </p>
       </Card>
 
@@ -119,6 +128,8 @@ const TakeAttendance = () => {
                       ✓ Saved
                     </span>
                   )}
+
+                 
                 </div>
                 <div className="flex gap-2">
                   {STATUSES.map((status) => (
