@@ -1,3 +1,5 @@
+import type { Permission } from "@/types";
+
 export const SITE = {
   name: "iClub",
   description: "A records system for student club committees.",
@@ -22,6 +24,7 @@ export const ROUTES = {
   handovers: "/handovers",
   finance: "/finance",
   membersImport: "/members/import",
+  acceptInvitation: "/accept-invitation",
   attendanceFor: (id: string) => `/attendance/${id}`,
   project: (id: string) => `/projects/${id}`,
 } as const;
@@ -33,13 +36,25 @@ export const MAIN_NAV = [
 ] as const;
 
 /** Links shown in the signed-in app sidebar. */
-export const APP_NAV = [
+type NavItem = {
+  label: string;
+  href: string;
+  ready: boolean;
+  needs?: Permission;
+};
+
+export const APP_NAV: readonly NavItem[] = [
   { label: "Home", href: ROUTES.home, ready: true },
   { label: "Members", href: ROUTES.members, ready: true },
   { label: "Leadership", href: ROUTES.leadership, ready: true },
   { label: "Activities", href: ROUTES.activities, ready: true },
   { label: "Attendance", href: ROUTES.attendance, ready: true },
-  { label: "Finance", href: ROUTES.finance, ready: false },
+  {
+    label: "Finance",
+    href: ROUTES.finance,
+    ready: false,
+    needs: "finance.view",
+  },
   { label: "Records & custody", href: ROUTES.records, ready: false },
   { label: "Handovers", href: ROUTES.handovers, ready: false },
 ] as const;
@@ -71,3 +86,25 @@ export const ATTENDANCE_LABELS = {
   absent: "Absent",
   excused: "Excused",
 } as const;
+
+export const ACCESS_LEVELS = {
+  administrator: "Administrator",
+  treasurer: "Treasurer",
+  officeholder: "Officeholder",
+  patron: "Patron (read-only)",
+} as const;
+
+export const PERMISSIONS = [
+  "club.manage",
+  "members.manage",
+  "members.import",
+  "leadership.manage",
+  "activities.manage",
+  "attendance.record",
+  "finance.view",
+  "finance.post",
+  "records.manage",
+  "handover.manage",
+] as const;
+
+export const PASSWORD_MIN_LENGTH = 10;

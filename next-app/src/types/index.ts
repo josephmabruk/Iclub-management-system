@@ -3,6 +3,8 @@ import {
   MEMBER_STATUS_LABELS,
   ATTENDANCE_LABELS,
   MEMBERSHIP_SOURCES,
+  ACCESS_LEVELS,
+  PERMISSIONS,
 } from "@/constants";
 
 export type User = {
@@ -10,6 +12,8 @@ export type User = {
   name: string;
   email: string;
   club?: Club;
+  permissions?: Permission[];
+  offices?: string[];
 };
 
 export type ProjectStatus = "active" | "paused" | "done";
@@ -65,6 +69,7 @@ export type PositionDraft = {
   unitId: string | null;
   requiredOffice: boolean;
   inVerifiedRoster: boolean;
+  accessLevel?: AccessLevel;
 };
 
 export type Term = {
@@ -196,6 +201,7 @@ export type LeadershipRow = {
   inVerifiedRoster: boolean;
   status: LeadershipStatus;
   holder: { memberId: string; fullName: string; memberNumber: string } | null;
+  hasAccount: boolean;
 };
 
 export type AppointRequest = { positionId: string; memberId: string };
@@ -260,3 +266,27 @@ export type ParticipationRow = {
   absent: number;
   rate: number | null;
 };
+
+export type AccessLevel = keyof typeof ACCESS_LEVELS;
+
+export type Permission = (typeof PERMISSIONS)[number];
+
+export type Invitation = {
+  token: string;
+  email: string;
+  memberId: string;
+  clubId: string;
+  expiresAt: string;
+};
+
+export type InviteRequest = { memberId: string; email: string };
+
+export type InviteResult = { link: string };
+
+export type InvitationInfo = {
+  email: string;
+  memberName: string;
+  clubName: string;
+};
+
+export type AcceptInvitationRequest = { token: string; password: string };

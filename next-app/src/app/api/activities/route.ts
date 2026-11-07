@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { db, delay, errorResponse, getSessionRecord } from "@/app/api/_mock/db";
 import { isDay, isTime } from "@/lib/validate";
 import type { Activity, CreateActivityRequest } from "@/types";
+import { forbid } from "@/app/api/_mock/db";
 
 /** GET /api/activities: the club's activities, soonest first. */
 export async function GET() {
@@ -23,6 +24,9 @@ export async function POST(request: Request) {
   const user = await getSessionRecord();
   const club = user?.club;
   if (!user || !club) return errorResponse("Not signed in", 401);
+
+  const denied = forbid(user, "activities.manage");
+  if (denied) return denied;
 
   const name = body.name?.trim();
   const location = body.location?.trim();

@@ -11,6 +11,7 @@ import {
   useRescheduleActivityMutation,
 } from "@/store/api/activitiesApi";
 import type { Activity } from "@/types";
+import { usePermissions } from "@/hooks/usePermissions";
 
 type Panel = "reschedule" | "cancel" | null;
 
@@ -21,6 +22,7 @@ const ActivityActions = ({ activity }: { activity: Activity }) => {
     useRescheduleActivityMutation();
   const [cancel, { isLoading: cancelling, error: cancelError }] =
     useCancelActivityMutation();
+  const { can } = usePermissions();
 
   /**FUNCTIONS */
   const handleReschedule = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -39,9 +41,12 @@ const ActivityActions = ({ activity }: { activity: Activity }) => {
   const handleCancel = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
-    // TODO: call cancel({ id: activity.id, reason: String(form.get("reason")) })
-    //       and close the panel with setPanel(null) if it worked,
-    //       the same way handleReschedule does.
+
+    const result = await cancel({
+      id: activity.id,
+      reason: String(form.get("reason")),
+    });
+    if (!result.error) setPanel(null);
   };
 
   /**COMPONENT */

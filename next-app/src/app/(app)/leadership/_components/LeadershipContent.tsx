@@ -15,6 +15,8 @@ import {
 } from "@/store/api/leadershipApi";
 import { useGetMembersQuery } from "@/store/api/membersApi";
 import type { LeadershipStatus } from "@/types";
+import { usePermissions } from "@/hooks/usePermissions";
+import InviteHolder from "./InviteHolder";
 
 const STATUS: Record<
   LeadershipStatus,
@@ -36,6 +38,7 @@ const LeadershipContent = () => {
     useEndAppointmentMutation();
   const [positionId, setPositionId] = useState("");
   const [memberId, setMemberId] = useState("");
+  const { can } = usePermissions();
 
   const club = user?.club;
 
@@ -76,8 +79,7 @@ const LeadershipContent = () => {
         unitName(row.unitId),
         row.holder?.fullName ?? "",
         row.holder?.memberNumber ?? "",
-        // TODO: "Vacant" if there is no holder, "Holder is not active" if
-        //       row.status is "attention", otherwise "" (no exception)
+
         !row.holder
           ? "Vacant"
           : row.status === "attention"
@@ -115,73 +117,75 @@ const LeadershipContent = () => {
         </p>
       )}
 
-      <Card title="Appoint an officeholder">
-        {vacant.length === 0 ? (
-          <p className="muted text-sm">Every position has a holder.</p>
-        ) : (
-          <form onSubmit={handleAppoint} className="flex flex-col gap-4">
-            <p className="muted text-sm">
-              One holder per position. Only active members can be appointed.
-            </p>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div>
-                <label
-                  htmlFor="appoint-position"
-                  className="mb-1 block text-sm font-medium"
-                >
-                  Position
-                </label>
-                <select
-                  id="appoint-position"
-                  value={positionId}
-                  onChange={(event) => setPositionId(event.target.value)}
-                  required
-                  className="w-full rounded-lg border border-gray-300 bg-white p-2.5 text-sm"
-                >
-                  <option value="">Choose a vacant position</option>
-                  {vacant.map((row) => (
-                    <option key={row.positionId} value={row.positionId}>
-                      {row.positionName} · {unitName(row.unitId)}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label
-                  htmlFor="appoint-member"
-                  className="mb-1 block text-sm font-medium"
-                >
-                  Member
-                </label>
-                <select
-                  id="appoint-member"
-                  value={memberId}
-                  onChange={(event) => setMemberId(event.target.value)}
-                  required
-                  className="w-full rounded-lg border border-gray-300 bg-white p-2.5 text-sm"
-                >
-                  <option value="">Choose an active member</option>
-                  {activeMembers.map((member) => (
-                    <option key={member.id} value={member.id}>
-                      {member.fullName} · {member.memberNumber}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            {appointError && (
-              <p role="alert" className="text-sm text-red-600">
-                {getErrorMessage(appointError)}
+      {can("leadership.manage") && (
+        <Card title="Appoint an officeholder">
+          {vacant.length === 0 ? (
+            <p className="muted text-sm">Every position has a holder.</p>
+          ) : (
+            <form onSubmit={handleAppoint} className="flex flex-col gap-4">
+              <p className="muted text-sm">
+                One holder per position. Only active members can be appointed.
               </p>
-            )}
-            <div>
-              <Button type="submit" loading={appointing}>
-                Appoint officeholder
-              </Button>
-            </div>
-          </form>
-        )}
-      </Card>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label
+                    htmlFor="appoint-position"
+                    className="mb-1 block text-sm font-medium"
+                  >
+                    Position
+                  </label>
+                  <select
+                    id="appoint-position"
+                    value={positionId}
+                    onChange={(event) => setPositionId(event.target.value)}
+                    required
+                    className="w-full rounded-lg border border-gray-300 bg-white p-2.5 text-sm"
+                  >
+                    <option value="">Choose a vacant position</option>
+                    {vacant.map((row) => (
+                      <option key={row.positionId} value={row.positionId}>
+                        {row.positionName} · {unitName(row.unitId)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label
+                    htmlFor="appoint-member"
+                    className="mb-1 block text-sm font-medium"
+                  >
+                    Member
+                  </label>
+                  <select
+                    id="appoint-member"
+                    value={memberId}
+                    onChange={(event) => setMemberId(event.target.value)}
+                    required
+                    className="w-full rounded-lg border border-gray-300 bg-white p-2.5 text-sm"
+                  >
+                    <option value="">Choose an active member</option>
+                    {activeMembers.map((member) => (
+                      <option key={member.id} value={member.id}>
+                        {member.fullName} · {member.memberNumber}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              {appointError && (
+                <p role="alert" className="text-sm text-red-600">
+                  {getErrorMessage(appointError)}
+                </p>
+              )}
+              <div>
+                <Button type="submit" loading={appointing}>
+                  Appoint officeholder
+                </Button>
+              </div>
+            </form>
+          )}
+        </Card>
+      )}
 
       {endError && (
         <p role="alert" className="text-sm text-red-600">
@@ -219,17 +223,25 @@ const LeadershipContent = () => {
                       <StatusChip label={look.label} tone={look.tone} />
                     </td>
                     <td className="px-4 py-3 text-right">
-                      {row.holder && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          loading={ending}
-                          onClick={() =>
-                            endAppointment({ positionId: row.positionId })
-                          }
-                        >
-                          End appointment
-                        </Button>
+                      {row.holder && can("leadership.manage") && (
+                        <div className="flex flex-wrap items-start justify-end gap-2">
+                          {!row.hasAccount && (
+                            <InviteHolder
+                              memberId={row.holder.memberId}
+                              memberName={row.holder.fullName}
+                            />
+                          )}
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            loading={ending}
+                            onClick={() =>
+                              endAppointment({ positionId: row.positionId })
+                            }
+                          >
+                            End appointment
+                          </Button>
+                        </div>
                       )}
                     </td>
                   </tr>

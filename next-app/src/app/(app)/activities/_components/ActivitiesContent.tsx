@@ -11,6 +11,7 @@ import { useGetActivitiesQuery } from "@/store/api/activitiesApi";
 import type { Activity } from "@/types";
 import ActivityActions from "./ActivityActions";
 import CreateActivityForm from "./CreateActivityForm";
+import { usePermissions } from "@/hooks/usePermissions";
 
 type SectionProps = {
   title: string;
@@ -53,6 +54,7 @@ const ActivitiesContent = () => {
   const { user } = useAuth();
   const { data: activities, isLoading, isError } = useGetActivitiesQuery();
   const [creating, setCreating] = useState(false);
+  const { can } = usePermissions();
 
   /**COMPONENT */
   if (isLoading) return <StateLoading label="Loading activities..." />;
@@ -84,7 +86,11 @@ const ActivitiesContent = () => {
           </p>
         </div>
         {!creating && (
-          <Button onClick={() => setCreating(true)}>Create activity</Button>
+          <Button
+            onClick={() => setCreating(!creating && can("activities.manage"))}
+          >
+            Create activity
+          </Button>
         )}
       </header>
 

@@ -14,9 +14,18 @@ import type {
   Appointment,
   Activity,
   AttendanceMark,
+  Invitation,
+  Permission,
 } from "@/types";
+import { PERMISSIONS } from "@/constants";
+import { todayInNairobi } from "@/lib/format";
+import { LEVEL_PERMISSIONS } from "@/lib/permissions";
 
-type StoredUser = User & { password: string };
+type StoredUser = User & {
+  password: string;
+  isOwner?: boolean;
+  memberId?: string;
+};
 type MockDb = {
   users: StoredUser[];
   projects: Project[];
@@ -25,6 +34,7 @@ type MockDb = {
   appointments: Record<string, Appointment[]>;
   activities: Record<string, Activity[]>;
   attendance: Record<string, Record<string, AttendanceMark>>;
+  invitations: Record<string, Invitation>;
 };
 
 const SESSION_COOKIE = "session";
@@ -76,15 +86,48 @@ export const db: MockDb = (globalForMock.mockDb ??= {
   appointments: {},
   activities: {},
   attendance: {},
+  invitations: {},
 });
 
+export const accessFor = (user: StoredUser) => {
+  const none = { permissions: [] as Permission[], offices: [] as string[] };
+  const club = user.club;
+  if (!club) return none;
+
+  //The registrant is the administrator: there are no positions yet to hold.
+  if (user.isOwner)
+    return { permissions: [...PERMISSIONS], offices: ["Administrator"] };
+
+  //FR-023: access is valid only inside the term's dates.
+  const term = club.term;
+  const today = todayInNairobi();
+  if (!term || today < term.startDate || today > term.endDate) return none;
+
+  const held = (db.appointments?.[club.id] ?? []).filter(
+    (a) =>
+      a.memberId === user.memberId && !a.endedAt && a.termName === term.name,
+  );
+
+  const positions = club.positions.filter((p) =>
+    held.some((a) => a.positionId === p.id),
+  );
+
+  const granted = new Set<Permission>();
+  for (const position of positions)
+    for (const permission of LEVEL_PERMISSIONS[
+      position.accessLevel ?? "officeholder"
+    ])
+      granted.add(permission);
+
+  return { permissions: [...granted], offices: positions.map((p) => p.name) };
+};
+
 /** Remove the password before sending a user to the browser. */
-const toPublicUser = ({ id, name, email, club }: StoredUser): User => ({
-  id,
-  name,
-  email,
-  club,
-});
+
+const toPublicUser = (user: StoredUser): User => {
+  const { id, name, email, club } = user;
+  return { id, name, email, club, ...accessFor(user) };
+};
 
 /** Respond with the user and set the session cookie. The cookie is just the user id, which is fine for a mock only! */
 export const startSession = (user: StoredUser) => {
@@ -125,3 +168,14 @@ export const errorResponse = (message: string, status: number) =>
 /** Fake network latency so loading states are visible. */
 export const delay = (ms = 400) =>
   new Promise((resolve) => setTimeout(resolve, ms));
+
+export const forbid = (
+  user: StoredUser | undefined,
+  permissions: Permission,
+) => {
+  if (!user) return errorResponse("Not signed in", 401);
+
+  return accessFor(user).permissions.includes(permissions)
+    ? null
+    : errorResponse("You do not have permission to do this", 403);
+};

@@ -4,18 +4,24 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
-import { SETUP_STEPS } from "@/constants";
+import { ACCESS_LEVELS, SETUP_STEPS } from "@/constants";
 import { useAuth } from "@/hooks/useAuth";
 import { getErrorMessage } from "@/lib/utils";
 import { useUpdateClubMutation } from "@/store/api/clubApi";
-import type { PositionDraft } from "@/types";
+import type { AccessLevel, PositionDraft } from "@/types";
 
-const newPosition = (name = "", requiredOffice = false): PositionDraft => ({
+// NEW: the only newPosition, outside the component, with the access level
+const newPosition = (
+  name = "",
+  requiredOffice = false,
+  accessLevel: AccessLevel = "officeholder",
+): PositionDraft => ({
   id: crypto.randomUUID(),
   name,
   unitId: null,
   requiredOffice,
   inVerifiedRoster: true,
+  accessLevel,
 });
 
 const PositionsForm = () => {
@@ -28,8 +34,8 @@ const PositionsForm = () => {
   // Starter offices so a new club isn't facing a blank page. Editable.
   const [positions, setPositions] = useState<PositionDraft[]>([
     newPosition("Chairperson", true),
-    newPosition("Secretary", true),
-    newPosition("Treasurer", true),
+    newPosition("Secretary", true, "administrator"), // NEW
+    newPosition("Treasurer", true, "treasurer"), // NEW
   ]);
   const [formError, setFormError] = useState("");
 
@@ -59,10 +65,8 @@ const PositionsForm = () => {
       return;
     }
 
-    // TODO: reject two positions with the same name in the same unit
-    //       (see "Your challenge" below)
+    // Two positions clash when the name AND the unit are the same.
     const keys = cleaned.map(
-      //Checks whether the unit names have the same name and unitId. If they do, it will return a string with the name and unitId separated by a pipe character. If they don't, it will return a string with the name and "club" as the unitId.
       (p) => `${p.name.toLowerCase()}|${p.unitId ?? "club"}`,
     );
     if (new Set(keys).size !== keys.length) {
@@ -88,7 +92,8 @@ const PositionsForm = () => {
           key={position.id}
           className="flex flex-col gap-3 rounded-lg border border-gray-200 bg-gray-50 p-4"
         >
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-3 sm:grid-cols-3">
+            {/* NEW: was 2 */}
             <Input
               id={`position-name-${index}`}
               label="Position name"
@@ -118,6 +123,32 @@ const PositionsForm = () => {
                 {units.map((unit) => (
                   <option key={unit.id} value={unit.id}>
                     {unit.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* NEW: the access level select, third item in the grid */}
+            <div>
+              <label
+                htmlFor={`position-access-${index}`}
+                className="mb-1 block text-sm font-medium"
+              >
+                Access level
+              </label>
+              <select
+                id={`position-access-${index}`}
+                value={position.accessLevel}
+                onChange={(event) =>
+                  updatePosition(position.id, {
+                    accessLevel: event.target.value as AccessLevel,
+                  })
+                }
+                className="w-full rounded-lg border border-gray-300 bg-white p-2.5 text-sm"
+              >
+                {Object.entries(ACCESS_LEVELS).map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
                   </option>
                 ))}
               </select>

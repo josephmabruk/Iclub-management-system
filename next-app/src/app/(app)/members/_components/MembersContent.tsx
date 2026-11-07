@@ -6,13 +6,14 @@ import Button, { buttonStyles } from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import Input from "@/components/ui/Input";
 import StateLoading from "@/components/ui/StateLoading";
-import { MEMBER_STATUS_LABELS, ROUTES } from "@/constants";
+import { MEMBER_STATUS_LABELS, MEMBERSHIP_SOURCES, ROUTES } from "@/constants";
 import { useAuth } from "@/hooks/useAuth";
 import { useGetMembersQuery } from "@/store/api/membersApi";
 import type { MemberStatus } from "@/types";
 import AddMemberForm from "./AddMemberForm";
 import MemberStatusChip from "./MemberStatusChip";
 import MemberDrawer from "./MemberDrawer";
+import { usePermissions } from "@/hooks/usePermissions";
 
 const MembersContent = () => {
   /**VARIABLES (all hooks first, before any early return) */
@@ -22,10 +23,13 @@ const MembersContent = () => {
   const [status, setStatus] = useState<MemberStatus | "all">("all");
   const [adding, setAdding] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const { can, offices } = usePermissions();
 
   const club = user?.club;
   const units = club?.units ?? [];
-  const canAdd = club?.membershipSource === "officer_added";
+  const canAdd =
+    club?.membershipSource === MEMBERSHIP_SOURCES.officer &&
+    can("members.manage");
 
   /**COMPONENT */
   if (isLoading) return <StateLoading label="Loading members..." />;

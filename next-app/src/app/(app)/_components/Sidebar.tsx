@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { selectSidebarOpen } from "@/store/selectors";
 import { closeSidebar } from "@/store/slices/uiSlice";
+import { usePermissions } from "@/hooks/usePermissions";
 
 const ITEM = "flex items-center justify-between rounded-lg px-3 py-2.5 text-sm";
 
@@ -19,6 +20,8 @@ const Sidebar = () => {
   const isOpen = useAppSelector(selectSidebarOpen);
   const { user } = useAuth();
   const club = user?.club;
+  const { can, offices } = usePermissions();
+  const visibleNav = APP_NAV.filter((link) => !link.needs || can(link.needs));
 
   /**FUNCTIONS */
   const close = () => dispatch(closeSidebar());
@@ -54,8 +57,10 @@ const Sidebar = () => {
           <p className="text-base leading-snug font-semibold">
             {club?.name ?? "Your club"}
           </p>
-          {/* Stand-in until appointments exist: the registering user is the administrator. */}
-          <p className="mt-1 text-sm text-brand-200">Administrator</p>
+
+          <p className="mt-1 text-sm text-brand-200">
+            {offices.join(",") || "No current office"}
+          </p>
           {club?.term && (
             <p className="text-sm text-white/60">Term {club.term.name}</p>
           )}

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { db, delay, errorResponse, getSessionRecord } from "@/app/api/_mock/db";
 import { isDay, isTime } from "@/lib/validate";
 import type { RescheduleRequest } from "@/types";
+import { forbid } from "@/app/api/_mock/db";
 
 /** POST /api/activities/reschedule: move an activity. The original time stays in its history. */
 export async function POST(request: Request) {
@@ -12,6 +13,9 @@ export async function POST(request: Request) {
   const user = await getSessionRecord();
   const club = user?.club;
   if (!user || !club) return errorResponse("Not signed in", 401);
+
+  const denied = forbid(user, "members.manage");
+  if (denied) return denied;
 
   const activity = (db.activities[club.id] ?? []).find((a) => a.id === id);
   if (!activity) return errorResponse("That activity does not exist", 404);

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { db, delay, errorResponse, getSessionRecord } from "@/app/api/_mock/db";
 import { ATTENDANCE_LABELS } from "@/constants";
 import type { AttendanceMark, MarkRequest } from "@/types";
+import { forbid } from "@/app/api/_mock/db";
 
 /** POST /api/attendance/mark: record one member's attendance. Saved on every tap. */
 export async function POST(request: Request) {
@@ -12,6 +13,9 @@ export async function POST(request: Request) {
   const user = await getSessionRecord();
   const club = user?.club;
   if (!user || !club) return errorResponse("Not signed in", 401);
+
+  const denied = forbid(user, "members.manage");
+  if (denied) return denied;
 
   if (!(status in ATTENDANCE_LABELS))
     return errorResponse("Choose present, absent or excused", 400);

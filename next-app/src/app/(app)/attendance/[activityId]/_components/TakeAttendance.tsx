@@ -7,14 +7,15 @@ import Button, { buttonStyles } from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import Input from "@/components/ui/Input";
 import StateLoading from "@/components/ui/StateLoading";
-import { ATTENDANCE_LABELS, ROUTES } from "@/constants";
+import { ATTENDANCE_LABELS, ROUTES, ACCESS_LEVELS } from "@/constants";
 import { formatDay } from "@/lib/format";
 import { getErrorMessage } from "@/lib/utils";
 import {
   useGetAttendanceSheetQuery,
   useMarkAttendanceMutation,
 } from "@/store/api/activitiesApi";
-import type { AttendanceStatus } from "@/types";
+import type { AttendanceStatus, AccessLevel, PositionDraft } from "@/types";
+import { usePermissions } from "@/hooks/usePermissions";
 
 const STATUSES = Object.keys(ATTENDANCE_LABELS) as AttendanceStatus[];
 
@@ -28,6 +29,19 @@ const TakeAttendance = () => {
   } = useGetAttendanceSheetQuery(activityId);
   const [mark, { isLoading: saving, error }] = useMarkAttendanceMutation();
   const [search, setSearch] = useState("");
+  const { can } = usePermissions();
+  const newPosition = (
+    name = "",
+    requiredOffice = false,
+    accessLevel: AccessLevel = "officeholder",
+  ): PositionDraft => ({
+    id: crypto.randomUUID(),
+    name,
+    unitId: null,
+    requiredOffice,
+    inVerifiedRoster: true,
+    accessLevel,
+  });
 
   /**COMPONENT */
   if (isLoading) return <StateLoading label="Loading the register..." />;
@@ -128,8 +142,6 @@ const TakeAttendance = () => {
                       ✓ Saved
                     </span>
                   )}
-
-                 
                 </div>
                 <div className="flex gap-2">
                   {STATUSES.map((status) => (
@@ -141,7 +153,7 @@ const TakeAttendance = () => {
                         row.mark?.status === status ? "primary" : "ghost"
                       }
                       aria-pressed={row.mark?.status === status}
-                      disabled={cancelled}
+                      disabled={cancelled || !can("attendance.record")}
                       onClick={() =>
                         mark({ activityId, memberId: row.memberId, status })
                       }

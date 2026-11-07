@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { db, delay, errorResponse, getSessionRecord } from "@/app/api/_mock/db";
 import { MEMBERSHIP_SOURCES } from "@/constants";
 import type { CommitImportRequest, CommitImportResult } from "@/types";
+import { forbid } from "@/app/api/_mock/db";
 
 /** POST /api/members/import/commit: apply the saved dry-run report. */
 export async function POST(request: Request) {
@@ -12,6 +13,9 @@ export async function POST(request: Request) {
   const user = await getSessionRecord();
   if (!user?.club) return errorResponse("Not signed in", 401);
   const club = user.club;
+
+  const denied = forbid(user, "members.import");
+  if (denied) return denied;
 
   if (club.membershipSource !== MEMBERSHIP_SOURCES.imported)
     return errorResponse("This club does not use roster import", 409);

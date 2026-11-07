@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { db, delay, errorResponse, getSessionRecord } from "@/app/api/_mock/db";
 import { MEMBERSHIP_SOURCES } from "@/constants";
 import type { AddMemberRequest, Member } from "@/types";
+import { forbid } from "@/app/api/_mock/db";
 
 /** GET /api/members: the signed-in user's club register. */
 export async function GET() {
@@ -21,6 +22,9 @@ export async function POST(request: Request) {
   const user = await getSessionRecord();
   if (!user?.club) return errorResponse("Not signed in", 401);
   const club = user.club;
+
+  const denied = forbid(user, "members.manage");
+  if (denied) return denied;
 
   if (club.membershipSource !== MEMBERSHIP_SOURCES.officer) {
     return errorResponse(

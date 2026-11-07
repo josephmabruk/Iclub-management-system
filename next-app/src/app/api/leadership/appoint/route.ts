@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { db, delay, errorResponse, getSessionRecord } from "@/app/api/_mock/db";
 import type { AppointRequest, Appointment } from "@/types";
+import { forbid } from "@/app/api/_mock/db";
 
 /** POST /api/leadership/appoint: put an active member into an office. */
 export async function POST(request: Request) {
@@ -12,6 +13,9 @@ export async function POST(request: Request) {
   if (!user || !club?.term)
     return errorResponse("Finish club setup first", 409);
   const termName = club.term.name;
+
+  const denied = forbid(user, "leadership.manage");
+  if (denied) return denied;
 
   const position = club.positions.find((p) => p.id === positionId);
   if (!position) return errorResponse("That position does not exist", 404);

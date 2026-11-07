@@ -3,6 +3,9 @@ import type {
   Appointment,
   EndAppointmentRequest,
   LeadershipRow,
+  InviteResult,
+  InviteRequest,
+  Invitation,
 } from "@/types";
 import { baseApi } from "./baseApi";
 
@@ -20,6 +23,9 @@ export const leadershipApi = baseApi.injectEndpoints({
       query: (body) => ({ url: "/leadership/end", method: "POST", body }),
       invalidatesTags: ["Leadership", "Member", "Home"],
     }),
+    inviteHolder: build.mutation<InviteResult, InviteRequest>({
+      query: (body) => ({ url: "/invitations", method: "POST", body }),
+    }),
   }),
 });
 
@@ -27,4 +33,5 @@ export const {
   useGetLeadershipQuery,
   useAppointMutation,
   useEndAppointmentMutation,
+  useInviteHolderMutation,
 } = leadershipApi;

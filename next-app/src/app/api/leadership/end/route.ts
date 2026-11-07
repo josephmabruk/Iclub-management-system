@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { db, delay, errorResponse, getSessionRecord } from "@/app/api/_mock/db";
 import type { EndAppointmentRequest } from "@/types";
+import { forbid } from "@/app/api/_mock/db";
 
 /** POST /api/leadership/end: the holder leaves office. The record is kept. */
 export async function POST(request: Request) {
@@ -10,6 +11,9 @@ export async function POST(request: Request) {
   const user = await getSessionRecord();
   const club = user?.club;
   if (!user || !club?.term) return errorResponse("Not signed in", 401);
+
+  const denied = forbid(user, "leadership.manage");
+  if (denied) return denied;
 
   const appointment = (db.appointments[club.id] ?? []).find(
     (a) =>

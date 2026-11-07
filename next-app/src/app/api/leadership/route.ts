@@ -38,6 +38,9 @@ export async function GET() {
         : holder.status === "active"
           ? "verified"
           : "attention",
+      hasAccount: holder
+        ? db.users.some((u) => u.memberId === holder.id)
+        : false,
     };
   });
 
