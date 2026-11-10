@@ -18,6 +18,7 @@ import type {
   Permission,
   FinancialYear,
   LedgerEntry,
+  RecordItem,
 } from "@/types";
 import { PERMISSIONS } from "@/constants";
 import { todayInNairobi } from "@/lib/format";
@@ -39,6 +40,7 @@ type MockDb = {
   invitations: Record<string, Invitation>;
   financialYears: Record<string, FinancialYear[]>;
   ledger: Record<string, LedgerEntry[]>;
+  records: Record<string, RecordItem[]>;
 };
 
 const SESSION_COOKIE = "session";
@@ -93,6 +95,7 @@ export const db: MockDb = (globalForMock.mockDb ??= {
   invitations: {},
   financialYears: {},
   ledger: {},
+  records: {},
 });
 
 export const accessFor = (user: StoredUser) => {

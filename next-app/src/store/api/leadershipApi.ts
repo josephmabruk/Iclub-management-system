@@ -17,11 +17,11 @@ export const leadershipApi = baseApi.injectEndpoints({
     }),
     appoint: build.mutation<Appointment, AppointRequest>({
       query: (body) => ({ url: "/leadership/appoint", method: "POST", body }),
-      invalidatesTags: ["Leadership", "Member", "Home"],
+      invalidatesTags: ["Leadership", "Member", "Home", "Record"],
     }),
     endAppointment: build.mutation<Appointment, EndAppointmentRequest>({
       query: (body) => ({ url: "/leadership/end", method: "POST", body }),
-      invalidatesTags: ["Leadership", "Member", "Home"],
+      invalidatesTags: ["Leadership", "Member", "Home", "Record"],
     }),
     inviteHolder: build.mutation<InviteResult, InviteRequest>({
       query: (body) => ({ url: "/invitations", method: "POST", body }),

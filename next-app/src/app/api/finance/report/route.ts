@@ -46,10 +46,8 @@ export async function GET(request: Request) {
 
     // variancePct = variance as a whole-number percentage of line.planned
     //       (Math.round), or null when line.planned is 0. Replace the null below.
-    const variancePct: number | null = 
-      line.planned === 0
-      ? null
-      : Math.round((variance / line.planned) * 100);
+    const variancePct: number | null =
+      line.planned === 0 ? null : Math.round((variance / line.planned) * 100);
 
     return {
       lineId: line.id,

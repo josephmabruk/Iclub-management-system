@@ -5,6 +5,8 @@ import {
   MEMBERSHIP_SOURCES,
   ACCESS_LEVELS,
   PERMISSIONS,
+  DOCUMENT_TYPES,
+  RECORD_KINDS,
 } from "@/constants";
 
 export type User = {
@@ -363,4 +365,64 @@ export type BudgetReport = {
   from: string;
   to: string;
   rows: BudgetReportRow[];
+};
+
+export type DocumentType = keyof typeof DOCUMENT_TYPES;
+export type RecordKind = keyof typeof RECORD_KINDS;
+export type RecordState = "held" | "lost" | "disposed" | "written_off";
+
+export type CustodyEvent = {
+  id: string;
+  at: string;
+  by: string;
+  fromOfficeId: string | null;
+  toOfficeId: string | null;
+  reason: string;
+  handoverId?: string;
+};
+
+export type RecordItem = {
+  id: string;
+  kind: RecordKind;
+  name: string;
+  docType?: DocumentType;
+  period?: string;
+  description: string;
+  mark: string; // an asset's identifying mark or an account's handle, never a credential
+  location: string;
+  officeId: string; // a position id
+  state: RecordState;
+  stateNote?: string;
+  stateDate?: string;
+  outstanding?: { note: string; handoverId: string; since: string };
+  custodyLog: CustodyEvent[];
+  registeredBy: string;
+  registeredAt: string;
+};
+
+export type RecordView = RecordItem & {
+  officeName: string;
+  custodian: string | null; // null when the office is vacant
+};
+
+export type RegisterRecordRequest = {
+  kind: RecordKind;
+  name: string;
+  description: string;
+  mark: string;
+  location: string;
+  officeId: string;
+  docType?: DocumentType;
+  period?: string;
+};
+export type TransferCustodyRequest = {
+  id: string;
+  toOfficeId: string;
+  reason: string;
+};
+export type ChangeStateRequest = {
+  id: string;
+  state: "lost" | "disposed" | "written_off";
+  date: string;
+  reason: string;
 };

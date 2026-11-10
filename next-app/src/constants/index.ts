@@ -55,7 +55,7 @@ export const APP_NAV: readonly NavItem[] = [
     ready: true,
     needs: "finance.view",
   },
-  { label: "Records & custody", href: ROUTES.records, ready: false },
+  { label: "Records & custody", href: ROUTES.records, ready: true },
   { label: "Handovers", href: ROUTES.handovers, ready: false },
 ] as const;
 
@@ -108,3 +108,18 @@ export const PERMISSIONS = [
 ] as const;
 
 export const PASSWORD_MIN_LENGTH = 10;
+
+export const DOCUMENT_TYPES = {
+  constitution: "Constitution",
+  budget: "Budget",
+  audit: "Audit",
+  minutes: "Minutes",
+  brand_file: "Brand file",
+  other: "Other",
+} as const;
+
+export const RECORD_KINDS = {
+  document: "Document",
+  asset: "Physical asset",
+  account: "Online account",
+} as const;

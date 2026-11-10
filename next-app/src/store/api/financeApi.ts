@@ -50,8 +50,8 @@ export const financeApi = baseApi.injectEndpoints({
     }),
     getBudgetReport: build.query<
       BudgetReport,
-      { yearId: string; from: string; to: string }>
-      ({
+      { yearId: string; from: string; to: string }
+    >({
       query: ({ yearId, from, to }) =>
         `/finance/report?yearId=${encodeURIComponent(yearId)}&from=${from}&to=${to}`,
       providesTags: ["Finance"],
