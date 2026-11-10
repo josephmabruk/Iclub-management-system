@@ -52,7 +52,7 @@ export const APP_NAV: readonly NavItem[] = [
   {
     label: "Finance",
     href: ROUTES.finance,
-    ready: false,
+    ready: true,
     needs: "finance.view",
   },
   { label: "Records & custody", href: ROUTES.records, ready: false },

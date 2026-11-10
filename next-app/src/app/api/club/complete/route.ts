@@ -13,7 +13,10 @@ export async function POST() {
 
   const { membershipSource, term } = user.club;
   if (!membershipSource || !term)
-    return errorResponse("Choose a membership source and set the term first", 400);
+    return errorResponse(
+      "Choose a membership source and set the term first",
+      400,
+    );
 
   user.club = { ...user.club, setupStatus: "complete" };
   return NextResponse.json(user.club);

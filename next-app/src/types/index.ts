@@ -290,3 +290,77 @@ export type InvitationInfo = {
 };
 
 export type AcceptInvitationRequest = { token: string; password: string };
+
+export type Direction = "income" | "expenditure";
+
+export type BudgetLine = {
+  id: string;
+  name: string;
+  category: string;
+  direction: Direction; // my addition: the SRS says an entry must reference one line, income included
+  planned: number; // cents
+};
+
+export type FinancialYear = {
+  id: string;
+  name: string;
+  startDate: string;
+  endDate: string;
+  status: "open" | "closed";
+  lines: BudgetLine[];
+};
+
+export type LedgerEntry = {
+  id: string;
+  yearId: string;
+  direction: Direction;
+  amount: number; // cents, always greater than zero
+  currency: "KES";
+  date: string;
+  budgetLineId: string;
+  counterparty: string;
+  description: string;
+  receiptRefs: string[];
+  postedBy: string;
+  postedAt: string;
+  reversesId?: string;
+  reversed?: boolean;
+  history: MemberEvent[];
+};
+
+export type OpenYearRequest = {
+  startDate: string;
+  endDate: string;
+  lines: Omit<BudgetLine, "id">[];
+};
+
+export type RecordEntryRequest = {
+  direction: Direction;
+  amount: number;
+  date: string;
+  budgetLineId: string;
+  counterparty: string;
+  description: string;
+  receiptRef?: string;
+};
+
+export type ReverseRequest = { entryId: string; reason: string };
+export type AddReceiptRequest = { entryId: string; reference: string };
+export type CloseYearRequest = { yearId: string };
+
+export type BudgetReportRow = {
+  lineId: string;
+  name: string;
+  category: string;
+  direction: Direction;
+  planned: number;
+  actual: number;
+  variance: number; // actual minus planned, in cents
+  variancePct: number | null; // null when planned is zero
+  attention: boolean; // over budget (expenditure) or below target (income)
+};
+export type BudgetReport = {
+  from: string;
+  to: string;
+  rows: BudgetReportRow[];
+};

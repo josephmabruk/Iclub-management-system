@@ -16,6 +16,8 @@ import type {
   AttendanceMark,
   Invitation,
   Permission,
+  FinancialYear,
+  LedgerEntry,
 } from "@/types";
 import { PERMISSIONS } from "@/constants";
 import { todayInNairobi } from "@/lib/format";
@@ -35,6 +37,8 @@ type MockDb = {
   activities: Record<string, Activity[]>;
   attendance: Record<string, Record<string, AttendanceMark>>;
   invitations: Record<string, Invitation>;
+  financialYears: Record<string, FinancialYear[]>;
+  ledger: Record<string, LedgerEntry[]>;
 };
 
 const SESSION_COOKIE = "session";
@@ -87,6 +91,8 @@ export const db: MockDb = (globalForMock.mockDb ??= {
   activities: {},
   attendance: {},
   invitations: {},
+  financialYears: {},
+  ledger: {},
 });
 
 export const accessFor = (user: StoredUser) => {

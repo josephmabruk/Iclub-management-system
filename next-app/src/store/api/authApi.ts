@@ -52,8 +52,7 @@ export const authApi = baseApi.injectEndpoints({
       },
     }),
     getInvitationInfo: build.query<InvitationInfo, string>({
-      query: (token) =>
-        `/invitations/info?token=${encodeURIComponent(token)}`,
+      query: (token) => `/invitations/info?token=${encodeURIComponent(token)}`,
     }),
     logout: build.mutation<void, void>({
       query: () => ({ url: "/auth/logout", method: "POST" }),
